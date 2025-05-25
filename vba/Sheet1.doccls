@@ -1,0 +1,189 @@
+﻿Option Explicit
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Module to make panel cuts.
+'
+' Developer: Nuno Teixeira
+' Email: teixeiranh@gmail.com
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Private RobotNodes As RobotNodeServer
+Private robApp As RobotApplication
+Private NodeSel As RobotSelection
+Private pan_cut As RobotPanelCut
+
+Private dLargura As Double
+Private dAltura As Double
+Private sPanelName As String
+Private dLarguraPanelCut As Double
+
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Procedure for panel cut x positive.
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Public Sub MainPanelCutsXPositive()
+    
+    'Declaring variables
+    Set robApp = New RobotApplication
+    Set NodeSel = robApp.Project.structure.Selections.Get(I_OT_NODE)
+    Set RobotNodes = robApp.Project.structure.Nodes
+    Set pan_cut = robApp.Project.structure.Results.FiniteElems.PanelCuts.Create
+
+    'List of procedures to "set the stage"
+    GetCellValues
+    MRSAPUtilities.VerifyIfRobotIsOpened
+    MRSAPUtilities.SetStates
+    MRSAPUtilities.VerifyIfNodesWereCreated
+    MRSAPUtilities.VerifyIfNodesAreSelected
+        
+    Dim ii As Integer
+    'For loop to iterate node collection to construct the panel cut
+    For ii = 1 To NodeSel.Count
+        pan_cut.DefinitionType = I_PCDT_LIMITED_PLANE
+        pan_cut.Point1.Set RobotNodes.Get(NodeSel.Get(ii)).X + dLargura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y + dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        pan_cut.Point2.Set RobotNodes.Get(NodeSel.Get(ii)).X + dLargura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y - dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        robApp.Project.structure.Results.FiniteElems.PanelCuts.Store pan_cut, sPanelName & "X+" & CStr(ii)
+        pan_cut.Active = True
+    Next ii
+    
+    'Refresh RSAP view
+    robApp.Project.ViewMngr.Refresh
+    'Clean set of varibles
+    MRSAPUtilities.CleanVariables
+    
+End Sub
+
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Procedure for panel cut x negative.
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Public Sub MainPanelCutsXNegative()
+
+    'Declaring variables
+    Set robApp = New RobotApplication
+    Set NodeSel = robApp.Project.structure.Selections.Get(I_OT_NODE)
+    Set RobotNodes = robApp.Project.structure.Nodes
+    Set pan_cut = robApp.Project.structure.Results.FiniteElems.PanelCuts.Create
+    
+    'List of procedures to "set the stage"
+    GetCellValues
+    MRSAPUtilities.VerifyIfRobotIsOpened
+    MRSAPUtilities.SetStates
+    MRSAPUtilities.VerifyIfNodesWereCreated
+    MRSAPUtilities.VerifyIfNodesAreSelected
+        
+    Dim ii As Integer
+    'For loop to iterate node collection to construct the panel cut
+    For ii = 1 To NodeSel.Count
+        pan_cut.DefinitionType = I_PCDT_LIMITED_PLANE
+        pan_cut.Point1.Set RobotNodes.Get(NodeSel.Get(ii)).X - dLargura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y + dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        pan_cut.Point2.Set RobotNodes.Get(NodeSel.Get(ii)).X - dLargura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y - dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        robApp.Project.structure.Results.FiniteElems.PanelCuts.Store pan_cut, sPanelName & "X-" & CStr(ii)
+        pan_cut.Active = True
+    Next ii
+    
+    'Refresh RSAP view
+    robApp.Project.ViewMngr.Refresh
+    'Clean set of varibles
+    MRSAPUtilities.CleanVariables
+    
+End Sub
+
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Procedure for panel cut y positive.
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Public Sub MainPanelCutsYPositive()
+    
+    'Declaring variables
+    Set robApp = New RobotApplication
+    Set NodeSel = robApp.Project.structure.Selections.Get(I_OT_NODE)
+    Set RobotNodes = robApp.Project.structure.Nodes
+    Set pan_cut = robApp.Project.structure.Results.FiniteElems.PanelCuts.Create
+    
+    'List of procedures to "set the stage"
+    GetCellValues
+    MRSAPUtilities.VerifyIfRobotIsOpened
+    MRSAPUtilities.SetStates
+    MRSAPUtilities.VerifyIfNodesWereCreated
+    MRSAPUtilities.VerifyIfNodesAreSelected
+    
+    Dim ii As Integer
+    'For loop to iterate node collection to construct the panel cut
+    For ii = 1 To NodeSel.Count
+        pan_cut.DefinitionType = I_PCDT_LIMITED_PLANE
+        pan_cut.Point1.Set RobotNodes.Get(NodeSel.Get(ii)).X - dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y + dAltura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        pan_cut.Point2.Set RobotNodes.Get(NodeSel.Get(ii)).X + dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y + dAltura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        robApp.Project.structure.Results.FiniteElems.PanelCuts.Store pan_cut, sPanelName & "Y+" & CStr(ii)
+        pan_cut.Active = True
+    Next ii
+    
+    'Refresh RSAP view
+    robApp.Project.ViewMngr.Refresh
+    'Clean set of varibles
+    MRSAPUtilities.CleanVariables
+    
+End Sub
+
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Procedure for panel cut y negative.
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Public Sub MainPanelCutsYNegative()
+    
+    'Declaring variables
+    Set robApp = New RobotApplication
+    Set NodeSel = robApp.Project.structure.Selections.Get(I_OT_NODE)
+    Set RobotNodes = robApp.Project.structure.Nodes
+    Set pan_cut = robApp.Project.structure.Results.FiniteElems.PanelCuts.Create
+    
+    'List of procedures to "set the stage"
+    GetCellValues
+    MRSAPUtilities.VerifyIfRobotIsOpened
+    MRSAPUtilities.SetStates
+    MRSAPUtilities.VerifyIfNodesWereCreated
+    MRSAPUtilities.VerifyIfNodesAreSelected
+
+    Dim ii As Integer
+    'For loop to iterate node collection to construct the panel cut
+    For ii = 1 To NodeSel.Count
+        pan_cut.DefinitionType = I_PCDT_LIMITED_PLANE
+        pan_cut.Point1.Set RobotNodes.Get(NodeSel.Get(ii)).X - dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y - dAltura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        pan_cut.Point2.Set RobotNodes.Get(NodeSel.Get(ii)).X + dLarguraPanelCut / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).Y - dAltura / 2, _
+        RobotNodes.Get(NodeSel.Get(ii)).z
+        robApp.Project.structure.Results.FiniteElems.PanelCuts.Store pan_cut, sPanelName & "Y-" & CStr(ii)
+        pan_cut.Active = True
+    Next ii
+    
+    'Refresh RSAP view
+    robApp.Project.ViewMngr.Refresh
+    'Clean set of varibles
+    MRSAPUtilities.CleanVariables
+
+End Sub
+
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+' Auxiliary procedure to get the cell values from Excel UI worksheet.
+' /////////////////////////////////////////////////////////////////////////////////////////////////
+'
+Private Sub GetCellValues()
+    dLargura = Range("C3").Value
+    dAltura = Range("C4").Value
+    sPanelName = Range("F3").Value
+    dLarguraPanelCut = Range("F4").Value
+End Sub
+
